@@ -16,6 +16,10 @@ public:
     bool parse(QStringList args);
     QString name() const;
 
+public slots:
+    void helpCommand();
+    QString helpHelp();
+
 protected:
     void print(const QString &message);
     void printLine(const QString &message);

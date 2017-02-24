@@ -6,6 +6,8 @@ namespace Engnr {
 namespace InteractiveShell {
 
 const char *CommandPostfix = "Command";
+const int CommandPostfixSize = sizeof(CommandPostfix) - 1;
+const char *HelpPostfix = "Help";
 
 InteractiveCommand::InteractiveCommand(QObject *parent) :
     QObject(parent)
@@ -55,6 +57,33 @@ QString InteractiveCommand::name() const
 {
     QString className = metaObject()->className();
     return className.toLower();
+}
+
+void InteractiveCommand::helpCommand()
+{
+    const QMetaObject *mo = metaObject();
+    for (int i = 0; i < mo->methodCount(); i++) {
+        const QMetaMethod method = mo->method(i);
+        QByteArray methodName = method.name();
+        if (methodName.endsWith(CommandPostfix)) {
+            methodName.chop(CommandPostfixSize);
+            print(methodName + " - ");
+
+            QByteArray signature = methodName + HelpPostfix + "()";
+            int index = mo->indexOfMethod(signature);
+            if (index > 0) {
+                QMetaMethod helpMethod = mo->method(index);
+                QString help;
+                helpMethod.invoke(this, Qt::DirectConnection, Q_RETURN_ARG(QString, help));
+                printLine(help);
+            }
+        }
+    }
+}
+
+QString InteractiveCommand::helpHelp()
+{
+    return QString("List available commands");
 }
 
 void InteractiveCommand::print(const QString &message)
