@@ -15,5 +15,10 @@ void RootCommand::quitCommand()
     QCoreApplication::quit();
 }
 
+QString RootCommand::quitHelp()
+{
+    return QString("Quit from application");
+}
+
 } // namespace InteractiveShell
 } // namespace Engnr

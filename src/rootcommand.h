@@ -14,6 +14,7 @@ public:
 
 public slots:
     void quitCommand();
+    QString quitHelp();
 };
 
 } // namespace InteractiveShell
