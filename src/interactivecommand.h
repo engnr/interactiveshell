@@ -16,6 +16,10 @@ public:
     bool parse(QStringList args);
     QString name() const;
 
+protected:
+    void print(const QString &message);
+    void printLine(const QString &message);
+
 private:
     QList<InteractiveCommand *> m_commands;
 };

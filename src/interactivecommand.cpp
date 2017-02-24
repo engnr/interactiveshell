@@ -57,6 +57,18 @@ QString InteractiveCommand::name() const
     return className.toLower();
 }
 
+void InteractiveCommand::print(const QString &message)
+{
+    QTextStream out(stdout);
+    out << message;
+}
+
+void InteractiveCommand::printLine(const QString &message)
+{
+    QTextStream out(stdout);
+    out << message << "\n";
+}
+
 } // namespace InteractiveShell
 } // namespace Engnr
 
