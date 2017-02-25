@@ -3,7 +3,7 @@ QT -= gui
 
 CONFIG += c++11
 
-TARGET = cli
+TARGET = helloworld
 CONFIG += console
 CONFIG -= app_bundle
 
