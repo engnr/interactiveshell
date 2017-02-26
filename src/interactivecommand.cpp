@@ -1,6 +1,7 @@
 #include "interactivecommand.h"
 
 #include <QMetaMethod>
+#include <QTextStream>
 
 namespace Engnr {
 namespace InteractiveShell {
@@ -29,7 +30,7 @@ void InteractiveCommand::removeCommand(InteractiveCommand *command)
 bool InteractiveCommand::parse(QStringList args)
 {
     if (args.isEmpty())
-        return true;
+        return false;
 
     QString arg = args.takeFirst();
     QString commandName = arg + CommandPostfix;
@@ -45,8 +46,11 @@ bool InteractiveCommand::parse(QStringList args)
         }
     } else {
         for (InteractiveCommand *command : m_commands) {
-            if (command->name() == arg && command->parse(args))
+            if (command->name() == arg) {
+                if (!command->parse(args))
+                    command->run();
                 return true;
+            }
         }
     }
 
@@ -57,6 +61,11 @@ QString InteractiveCommand::name() const
 {
     QString className = metaObject()->className();
     return className.toLower();
+}
+
+void InteractiveCommand::run()
+{
+    helpCommand();
 }
 
 QString InteractiveCommand::description() const

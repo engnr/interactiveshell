@@ -16,6 +16,7 @@ public:
     bool parse(QStringList args);
     QString name() const;
 
+    virtual void run();
     virtual QString description() const;
 
 public slots:
