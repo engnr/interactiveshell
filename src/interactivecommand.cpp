@@ -9,6 +9,7 @@ namespace InteractiveShell {
 const char *CommandPostfix = "Command";
 const int CommandPostfixSize = sizeof(CommandPostfix) - 1;
 const char *HelpPostfix = "Help";
+const int ShiftSpaces = 4;
 
 InteractiveCommand::InteractiveCommand(QObject *parent) :
     QObject(parent)
@@ -81,7 +82,7 @@ void InteractiveCommand::helpCommand()
         QByteArray methodName = method.name();
         if (methodName.endsWith(CommandPostfix)) {
             methodName.chop(CommandPostfixSize);
-            print(methodName + " - ");
+            print(methodName + " - ", ShiftSpaces);
 
             QByteArray signature = methodName + HelpPostfix + "()";
             int index = mo->indexOfMethod(signature);
@@ -97,7 +98,8 @@ void InteractiveCommand::helpCommand()
     for (InteractiveCommand *command : m_commands)
         printLine(QString("%1 - %2")
                   .arg(command->name())
-                   .arg(command->description()));
+                   .arg(command->description()),
+                  ShiftSpaces);
 }
 
 QString InteractiveCommand::helpHelp()
@@ -105,16 +107,18 @@ QString InteractiveCommand::helpHelp()
     return QString("List available commands");
 }
 
-void InteractiveCommand::print(const QString &message)
+void InteractiveCommand::print(const QString &message, int spaces)
 {
     QTextStream out(stdout);
-    out << message;
+    QString space(" ");
+    out << space.repeated(spaces) << message;
 }
 
-void InteractiveCommand::printLine(const QString &message)
+void InteractiveCommand::printLine(const QString &message, int spaces)
 {
     QTextStream out(stdout);
-    out << message << "\n";
+    QString space(" ");
+    out << space.repeated(spaces) << message << "\n";
 }
 
 } // namespace InteractiveShell

@@ -24,8 +24,8 @@ public slots:
     QString helpHelp();
 
 protected:
-    void print(const QString &message);
-    void printLine(const QString &message);
+    void print(const QString &message, int spaces = 0);
+    void printLine(const QString &message, int spaces = 0);
 
 private:
     QList<InteractiveCommand *> m_commands;
