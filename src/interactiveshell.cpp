@@ -27,6 +27,9 @@ void InteractiveShell::setRootCommand(InteractiveCommand *rootCommand)
 
 void InteractiveShell::parse(const QByteArray &command)
 {
+    if (command.isEmpty())
+        return;
+
     if (m_rootCommand) {
         QStringList args = QString(command).split(" ");
         if (!m_rootCommand->parse(args))
