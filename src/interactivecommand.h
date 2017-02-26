@@ -16,6 +16,8 @@ public:
     bool parse(QStringList args);
     QString name() const;
 
+    virtual QString description() const;
+
 public slots:
     void helpCommand();
     QString helpHelp();

@@ -59,6 +59,11 @@ QString InteractiveCommand::name() const
     return className.toLower();
 }
 
+QString InteractiveCommand::description() const
+{
+    return QString();
+}
+
 void InteractiveCommand::helpCommand()
 {
     const QMetaObject *mo = metaObject();
@@ -79,6 +84,11 @@ void InteractiveCommand::helpCommand()
             }
         }
     }
+
+    for (InteractiveCommand *command : m_commands)
+        printLine(QString("%1 - %2")
+                  .arg(command->name())
+                   .arg(command->description()));
 }
 
 QString InteractiveCommand::helpHelp()
