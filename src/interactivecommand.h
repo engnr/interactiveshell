@@ -26,6 +26,9 @@ public slots:
 protected:
     void print(const QString &message, int spaces = 0);
     void printLine(const QString &message, int spaces = 0);
+    QString ask(const QString &question, int spaces = 0);
+    bool yes(const QString &statement);
+    bool no(const QString &statement);
 
 private:
     QList<InteractiveCommand *> m_commands;

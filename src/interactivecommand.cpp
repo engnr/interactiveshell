@@ -121,6 +121,33 @@ void InteractiveCommand::printLine(const QString &message, int spaces)
     out << space.repeated(spaces) << message << "\n";
 }
 
+QString InteractiveCommand::ask(const QString &question, int spaces)
+{
+    printLine(question, spaces);
+    QTextStream in(stdin);
+    return in.readLine();
+}
+
+bool InteractiveCommand::yes(const QString &statement)
+{
+    forever {
+        printLine(statement);
+        QString answer = ask(QString("yes/no?"), ShiftSpaces);
+        if (answer == "yes" || answer == "y")
+            return true;
+        else if (answer == "no" || answer == "n")
+            return false;
+        else
+            printLine("Please answer yes or no");
+    };
+}
+
+bool InteractiveCommand::no(const QString &statement)
+{
+    return !yes(statement);
+}
+
+
 } // namespace InteractiveShell
 } // namespace Engnr
 

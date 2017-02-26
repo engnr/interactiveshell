@@ -23,6 +23,21 @@ public slots:
     {
         return QString("Current date");
     }
+
+    void nextCommand()
+    {
+        QDate date = QDate::currentDate();
+        do {
+            printLine(QString("Next weekday is %1")
+                      .arg(QDate::longDayName(date.dayOfWeek())));
+            date = date.addDays(1);
+        } while(yes("Show next day?"));
+    }
+
+    QString nextHelp() const
+    {
+        return QString("Next weekday");
+    }
 };
 
 #endif // DATECOMMAND_H
