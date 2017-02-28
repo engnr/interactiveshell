@@ -29,9 +29,14 @@ protected:
     QString ask(const QString &question, int spaces = 0);
     bool yes(const QString &statement);
     bool no(const QString &statement);
+    void mute();
+    void unmute();
+    bool isMuted() const;
 
 private:
     QList<InteractiveCommand *> m_commands;
+    bool m_muted;
+    QtMessageHandler m_oldMessageHandler;
 };
 
 } // namespace InteractiveShell

@@ -11,8 +11,19 @@ const int CommandPostfixSize = sizeof(CommandPostfix) - 1;
 const char *HelpPostfix = "Help";
 const int ShiftSpaces = 4;
 
+void muteMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &message)
+{
+    QByteArray localMsg = message.toLocal8Bit();
+    if (type == QtFatalMsg)
+        fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+    if (type == QtCriticalMsg)
+        fprintf(stderr, "Critical: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+}
+
 InteractiveCommand::InteractiveCommand(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_muted(false),
+    m_oldMessageHandler(0)
 {
 }
 
@@ -145,6 +156,24 @@ bool InteractiveCommand::yes(const QString &statement)
 bool InteractiveCommand::no(const QString &statement)
 {
     return !yes(statement);
+}
+
+void InteractiveCommand::mute()
+{
+    m_muted = true;
+    m_oldMessageHandler = qInstallMessageHandler(muteMessageHandler);
+}
+
+void InteractiveCommand::unmute()
+{
+    m_muted = false;
+    if (m_oldMessageHandler)
+        qInstallMessageHandler(m_oldMessageHandler);
+}
+
+bool InteractiveCommand::isMuted() const
+{
+    return m_muted;
 }
 
 
