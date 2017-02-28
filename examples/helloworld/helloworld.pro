@@ -9,7 +9,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-include(../../interactiveshell.pri)
+include(../example.pri)
 
 SOURCES += main.cpp
 
