@@ -1,17 +1,16 @@
 #include "abstractinteractiveshell.h"
 
-#include <unistd.h>
+#include "interactivecommand.h"
+#include <QDebug>
 
 namespace Engnr {
 namespace InteractiveShell {
 
 AbstractInteractiveShell::AbstractInteractiveShell(QObject *parent) :
     QObject(parent),
-    m_notifier(STDIN_FILENO, QSocketNotifier::Read),
-    m_promptPrefix(">>> ")
+    m_promptPrefix(">>> "),
+    m_rootCommand(0)
 {
-    connect(&m_notifier, &QSocketNotifier::activated,
-            this, &AbstractInteractiveShell::read);
 }
 
 void AbstractInteractiveShell::setPromptPrefix(const QString &prefix)
@@ -24,11 +23,30 @@ QString AbstractInteractiveShell::promptPrefix() const
     return m_promptPrefix;
 }
 
-void AbstractInteractiveShell::read(int)
+void AbstractInteractiveShell::setRootCommand(InteractiveCommand *rootCommand)
 {
-    QTextStream in(stdin);
-    QByteArray line = in.readLine().toLatin1();
-    parse(line);
+    if (m_rootCommand)
+        m_rootCommand->deleteLater();
+
+    m_rootCommand = rootCommand;
+}
+
+void AbstractInteractiveShell::run()
+{
+    prompt();
+}
+
+void AbstractInteractiveShell::parse(const QString &line)
+{
+    if (line.isEmpty())
+        return;
+
+    if (m_rootCommand) {
+        QStringList args = line.split(" ");
+        if (!m_rootCommand->parse(args))
+            qDebug() << "command not found";
+    }
+
     prompt();
 }
 

@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include <QTextStream>
-#include <QSocketNotifier>
 
 namespace Engnr {
 namespace InteractiveShell {
+
+class InteractiveCommand;
 
 class AbstractInteractiveShell : public QObject
 {
@@ -15,18 +16,17 @@ public:
     explicit AbstractInteractiveShell(QObject *parent = 0);
     void setPromptPrefix(const QString &prefix);
     QString promptPrefix() const;
+    void setRootCommand(InteractiveCommand *rootCommand);
+    void run();
 
 protected:
     void prompt();
-
-private slots:
-    void read(int);
+    void parse(const QString &line);
 
 private:
-    virtual void parse(const QByteArray &line) = 0;
 
-    QSocketNotifier m_notifier;
     QString m_promptPrefix;
+    InteractiveCommand *m_rootCommand;
 };
 
 } // namespace InteractiveShell

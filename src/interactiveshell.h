@@ -2,24 +2,22 @@
 #define INTERACTIVESHELL_H
 
 #include "abstractinteractiveshell.h"
+#include <QSocketNotifier>
 
 namespace Engnr {
 namespace InteractiveShell {
-
-class InteractiveCommand;
 
 class InteractiveShell : public AbstractInteractiveShell
 {
     Q_OBJECT
 public:
     explicit InteractiveShell(QObject *parent = 0);
-    void run();
-    void setRootCommand(InteractiveCommand *rootCommand);
+
+private slots:
+    void read();
 
 private:
-    void parse(const QByteArray &command);
-
-    InteractiveCommand *m_rootCommand;
+    QSocketNotifier m_notifier;
 };
 
 } // namespace InteractiveShell

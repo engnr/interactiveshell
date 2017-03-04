@@ -1,40 +1,23 @@
 #include "interactiveshell.h"
 
-#include "interactivecommand.h"
 #include <QDebug>
+#include <unistd.h>
 
 namespace Engnr {
 namespace InteractiveShell {
 
 InteractiveShell::InteractiveShell(QObject *parent) :
     AbstractInteractiveShell(parent),
-    m_rootCommand(0)
+    m_notifier(STDIN_FILENO, QSocketNotifier::Read)
 {
+    connect(&m_notifier, &QSocketNotifier::activated,
+            this, &InteractiveShell::read);
 }
 
-void InteractiveShell::run()
+void InteractiveShell::read()
 {
-    prompt();
-}
-
-void InteractiveShell::setRootCommand(InteractiveCommand *rootCommand)
-{
-    if (m_rootCommand)
-        m_rootCommand->deleteLater();
-
-    m_rootCommand = rootCommand;
-}
-
-void InteractiveShell::parse(const QByteArray &command)
-{
-    if (command.isEmpty())
-        return;
-
-    if (m_rootCommand) {
-        QStringList args = QString(command).split(" ");
-        if (!m_rootCommand->parse(args))
-            qDebug() << "command not found";
-    }
+    QTextStream in(stdin);
+    parse(in.readLine());
 }
 
 } // namespace InteractiveShell
