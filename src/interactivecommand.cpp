@@ -176,6 +176,21 @@ bool InteractiveCommand::isMuted() const
     return m_muted;
 }
 
+void InteractiveCommand::setColor(const Color &color)
+{
+    print(color.color());
+}
+
+void InteractiveCommand::setColors(const Colors &colors)
+{
+    for (const Color &color : colors)
+        print(color.color());
+}
+
+void InteractiveCommand::clearColor()
+{
+    print(Color::clear().color());
+}
 
 } // namespace InteractiveShell
 } // namespace Engnr

@@ -2,6 +2,7 @@
 #define INTERACTIVECOMMAND_H
 
 #include <QObject>
+#include "colors.h"
 
 namespace Engnr {
 namespace InteractiveShell {
@@ -32,6 +33,9 @@ protected:
     void mute();
     void unmute();
     bool isMuted() const;
+    void setColor(const Color &color);
+    void setColors(const Colors &colors);
+    void clearColor();
 
 private:
     QList<InteractiveCommand *> m_commands;
