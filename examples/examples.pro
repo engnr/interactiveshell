@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     helloworld \
     subcommands \
-    colors
+    colors \
+    overloading
