@@ -118,14 +118,14 @@ QString InteractiveCommand::helpHelp()
     return QString("List available commands");
 }
 
-void InteractiveCommand::print(const QString &message, int spaces)
+void InteractiveCommand::print(const QString &message, int spaces) const
 {
     QTextStream out(stdout);
     QString space(" ");
     out << space.repeated(spaces) << message;
 }
 
-void InteractiveCommand::printLine(const QString &message, int spaces)
+void InteractiveCommand::printLine(const QString &message, int spaces) const
 {
     QTextStream out(stdout);
     QString space(" ");

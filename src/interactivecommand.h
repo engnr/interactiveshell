@@ -25,8 +25,8 @@ public slots:
     QString helpHelp();
 
 protected:
-    void print(const QString &message, int spaces = 0);
-    void printLine(const QString &message, int spaces = 0);
+    void print(const QString &message, int spaces = 0) const;
+    void printLine(const QString &message, int spaces = 0) const;
     QString ask(const QString &question, int spaces = 0);
     bool yes(const QString &statement);
     bool no(const QString &statement);
