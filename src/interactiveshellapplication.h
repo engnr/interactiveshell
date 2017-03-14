@@ -14,6 +14,9 @@ public:
     InteractiveShellApplication(int &argc, char **argv);
     void setRootCommand(InteractiveCommand *rootCommand);
 
+private slots:
+    void run();
+
 private:
     InteractiveShell m_shell;
 };

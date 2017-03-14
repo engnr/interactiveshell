@@ -18,6 +18,7 @@ void InteractiveShell::read()
 {
     QTextStream in(stdin);
     parse(in.readLine());
+    prompt();
 }
 
 } // namespace InteractiveShell

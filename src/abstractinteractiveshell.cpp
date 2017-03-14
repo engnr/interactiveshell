@@ -36,18 +36,31 @@ void AbstractInteractiveShell::run()
     prompt();
 }
 
+void AbstractInteractiveShell::run(const QString &command)
+{
+    run();
+    parse(command);
+}
+
+void AbstractInteractiveShell::run(const QStringList &commands)
+{
+    run();
+    parse(commands);
+}
+
 void AbstractInteractiveShell::parse(const QString &line)
 {
-    if (line.isEmpty())
+    QStringList args = line.split(" ");
+    parse(args);
+}
+
+void AbstractInteractiveShell::parse(const QStringList &args)
+{
+    if (args.isEmpty())
         return;
 
-    if (m_rootCommand) {
-        QStringList args = line.split(" ");
-        if (!m_rootCommand->parse(args))
-            qDebug() << "command not found";
-    }
-
-    prompt();
+    if (m_rootCommand && !m_rootCommand->parse(args))
+        qDebug() << "command not found";
 }
 
 void AbstractInteractiveShell::prompt()

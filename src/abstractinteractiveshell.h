@@ -18,10 +18,13 @@ public:
     QString promptPrefix() const;
     void setRootCommand(InteractiveCommand *rootCommand);
     void run();
+    void run(const QString &command);
+    void run(const QStringList &commands);
 
 protected:
     void prompt();
     void parse(const QString &line);
+    void parse(const QStringList &args);
 
 private:
 
