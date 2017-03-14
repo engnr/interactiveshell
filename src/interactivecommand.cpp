@@ -10,6 +10,7 @@ const char *CommandPostfix = "Command";
 const int CommandPostfixSize = sizeof(CommandPostfix) - 1;
 const char *HelpPostfix = "Help";
 const int ShiftSpaces = 4;
+const int MaxHelpFieldSize = 15;
 
 void muteMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &message)
 {
@@ -73,16 +74,25 @@ QString InteractiveCommand::description() const
 void InteractiveCommand::helpCommand()
 {
     const QMetaObject *mo = metaObject();
+
+    int fieldSize = 0;
+    QList<QPair<QString, QString>> helpMessages;
+
     for (int i = 0; i < mo->methodCount(); i++) {
         const QMetaMethod method = mo->method(i);
         QByteArray methodName = method.name();
+
         if (methodName.endsWith(CommandPostfix)) {
             methodName.chop(CommandPostfixSize);
-            print(methodName.toLower(), ShiftSpaces);
+
+            QPair<QString, QString> helpMessage;
+            helpMessage.first = methodName.toLower();
 
             QList<QByteArray> parameters = method.parameterNames();
             for (const QByteArray &parameter : parameters)
-                print(" " + parameter.toUpper());
+                helpMessage.first += " " + parameter.toUpper();
+
+            fieldSize = qMax(fieldSize, helpMessage.first.size());
 
             QByteArray signature = methodName + HelpPostfix + "()";
             int index = mo->indexOfMethod(signature);
@@ -90,16 +100,27 @@ void InteractiveCommand::helpCommand()
                 QMetaMethod helpMethod = mo->method(index);
                 QString help;
                 helpMethod.invoke(this, Qt::DirectConnection, Q_RETURN_ARG(QString, help));
-                printLine(" - " + help);
+                helpMessage.second = help;
             }
+
+            helpMessages << helpMessage;
         }
     }
 
-    for (InteractiveCommand *command : m_commands)
-        printLine(QString("%1 - %2")
-                  .arg(command->name())
-                   .arg(command->description()),
-                  ShiftSpaces);
+    for (InteractiveCommand *command : m_commands) {
+        QPair<QString, QString> helpMessage;
+        helpMessage.first = command->name();
+        helpMessage.second = command->description();
+        helpMessages << helpMessage;
+        fieldSize = qMax(fieldSize, helpMessage.first.size());
+    }
+
+    for (const auto helpMessage : helpMessages) {
+        say() << QString(' ').repeated(ShiftSpaces)
+              << helpMessage.first.leftJustified(fieldSize)
+              << QString(' ').repeated(fieldSize > MaxHelpFieldSize ? 0 : ShiftSpaces)
+              << helpMessage.second;
+    }
 }
 
 QString InteractiveCommand::helpHelp()
