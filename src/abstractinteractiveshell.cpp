@@ -50,7 +50,7 @@ void AbstractInteractiveShell::run(const QStringList &commands)
 
 void AbstractInteractiveShell::parse(const QString &line)
 {
-    QStringList args = line.split(" ");
+    QStringList args = line.simplified().split(" ");
     parse(args);
 }
 
