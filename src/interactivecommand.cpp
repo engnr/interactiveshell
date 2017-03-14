@@ -2,6 +2,7 @@
 
 #include <QMetaMethod>
 #include <QTextStream>
+#include <QProcess>
 
 namespace Engnr {
 namespace InteractiveShell {
@@ -221,6 +222,14 @@ void InteractiveCommand::setColors(const Colors &colors)
 void InteractiveCommand::clearColor()
 {
     print(Color::clear().color());
+}
+
+QString InteractiveCommand::sh(const QString &shellCommand)
+{
+    QProcess process;
+    process.start("sh", QStringList() << "-c" << shellCommand);
+    process.waitForFinished();
+    return process.readAllStandardOutput();
 }
 
 bool InteractiveCommand::runMethod(const QString &commandString, const QStringList &args)

@@ -41,6 +41,7 @@ protected:
     void setColor(const Color &color);
     void setColors(const Colors &colors);
     void clearColor();
+    QString sh(const QString &shellCommand);
 
 private:
     bool runMethod(const QString &commandString, const QStringList &args);
