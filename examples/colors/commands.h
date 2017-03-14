@@ -3,14 +3,17 @@
 
 #include "rootcommand.h"
 
+using namespace Engnr::InteractiveShell;
+
 class Commands : public Engnr::InteractiveShell::RootCommand
 {
     Q_OBJECT
 public slots:
     void greenCommand()
     {
-        setColor(Engnr::InteractiveShell::Color::green());
-        printLine("Green");
+        setColor(Color::green());
+        setColor(Color::onWhite());
+        say() << "Green";
         clearColor();
     }
 
@@ -21,9 +24,7 @@ public slots:
 
     void redCommand()
     {
-        setColor(Engnr::InteractiveShell::Color::red());
-        printLine("Red");
-        clearColor();
+        say() << Color::red() << "Red" << Color::clear();
     }
 
     QString redHelp() const
@@ -33,9 +34,7 @@ public slots:
 
     void yellowCommand()
     {
-        setColor(Engnr::InteractiveShell::Color::yellow());
-        printLine("Yellow");
-        clearColor();
+        say("Yellow", Color::yellow() | Color::onMagenta());
     }
 
     QString yellowHelp() const

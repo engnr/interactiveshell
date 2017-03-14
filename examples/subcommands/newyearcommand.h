@@ -13,7 +13,7 @@ public:
     {
         QDate current = QDate::currentDate();
         QDate newYear(current.year() + 1, 1, 1);
-        qDebug() << current.daysTo(newYear);
+        say() << current.daysTo(newYear);
     }
 
     QString description() const

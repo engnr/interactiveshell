@@ -13,7 +13,7 @@ public slots:
     }
     void helloCommand()
     {
-        printLine("Hello, world!");
+        say("Hello, world!");
     }
 };
 

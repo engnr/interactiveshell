@@ -16,7 +16,7 @@ public:
 public slots:
     void currentCommand()
     {
-        printLine(QDate::currentDate().toString());
+        say() << QDate::currentDate().toString();
     }
 
     QString currentHelp() const
@@ -28,8 +28,8 @@ public slots:
     {
         QDate date = QDate::currentDate();
         do {
-            printLine(QString("Next weekday is %1")
-                      .arg(QDate::longDayName(date.dayOfWeek())));
+            say() << "Next weekday is"
+                  << QDate::longDayName(date.dayOfWeek());
             date = date.addDays(1);
         } while(yes("Show next day?"));
     }

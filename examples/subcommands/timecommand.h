@@ -16,7 +16,7 @@ public:
 public slots:
     void currentCommand()
     {
-        printLine(QTime::currentTime().toString());
+        say() << QTime::currentTime().toString();
     }
 
     QString currentHelp() const

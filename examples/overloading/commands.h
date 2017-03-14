@@ -3,7 +3,6 @@
 
 #include "rootcommand.h"
 #include "user.h"
-#include <QDebug>
 
 class Commands : public Engnr::InteractiveShell::RootCommand
 {
@@ -15,7 +14,7 @@ public slots:
         if (user.setFirstName(firstName) && user.setLastName(lastName))
             m_users << user;
         else
-            printLine("");
+            say() << "try: adduser John Doe";
     }
 
     void addUserCommand(const QVariant &firstName, const QVariant &lastName,
@@ -27,7 +26,7 @@ public slots:
                 && user.setAge(age))
             m_users << user;
         else
-            printLine("");
+            say() << "try: adduser John Doe 30";
     }
 
     QString addUserHelp() const
@@ -38,16 +37,16 @@ public slots:
     void usersCommand() const
     {
         if (m_users.isEmpty()) {
-            qDebug() << "No users";
+            say() << "No users";
             return;
         }
 
         for (const User &user : m_users) {
-            qDebug() << "First name:" << user.firstName();
-            qDebug() << "Last name:" << user.lastName();
+            say() << "First name:" << user.firstName();
+            say() << "Last name:" << user.lastName();
             if (user.hasAge())
-                qDebug() << "Age:" << user.age();
-            qDebug() << "\n";
+                say() << "Age:" << user.age();
+            say() << "-----";
         }
     }
 
