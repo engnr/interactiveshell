@@ -38,6 +38,12 @@ protected:
     void clearColor();
 
 private:
+    bool runMethod(const QString &commandString, const QStringList &args);
+    bool runCommand(const QString &commandString, const QStringList &args);
+    bool invokeMethod(const QMetaMethod &method, const QStringList &args);
+    bool checkMethodName(const QMetaMethod &method, const QString &command);
+    bool checkArguments(const QMetaMethod &method, const QStringList &args);
+
     QList<InteractiveCommand *> m_commands;
     bool m_muted;
     QtMessageHandler m_oldMessageHandler;

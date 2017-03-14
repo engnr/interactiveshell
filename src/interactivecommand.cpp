@@ -45,26 +45,11 @@ bool InteractiveCommand::parse(QStringList args)
         return false;
 
     QString arg = args.takeFirst();
-    QString commandName = arg + CommandPostfix;
-    QByteArray methodName = commandName.toLatin1() + "()";
-    QByteArray signature = QMetaObject::normalizedSignature(methodName.constData());
-    int index = metaObject()->indexOfMethod(signature);
+    if (runMethod(arg, args))
+        return true;
 
-    if (index > 0) {
-        QMetaMethod method = metaObject()->method(index);
-        if (method.access() == QMetaMethod::Public
-                && method.methodType() == QMetaMethod::Slot) {
-            return method.invoke(this, Qt::DirectConnection);
-        }
-    } else {
-        for (InteractiveCommand *command : m_commands) {
-            if (command->name() == arg) {
-                if (!command->parse(args))
-                    command->run();
-                return true;
-            }
-        }
-    }
+    if (runCommand(arg, args))
+        return true;
 
     return false;
 }
@@ -93,7 +78,11 @@ void InteractiveCommand::helpCommand()
         QByteArray methodName = method.name();
         if (methodName.endsWith(CommandPostfix)) {
             methodName.chop(CommandPostfixSize);
-            print(methodName + " - ", ShiftSpaces);
+            print(methodName.toLower(), ShiftSpaces);
+
+            QList<QByteArray> parameters = method.parameterNames();
+            for (const QByteArray &parameter : parameters)
+                print(" " + parameter.toUpper());
 
             QByteArray signature = methodName + HelpPostfix + "()";
             int index = mo->indexOfMethod(signature);
@@ -101,7 +90,7 @@ void InteractiveCommand::helpCommand()
                 QMetaMethod helpMethod = mo->method(index);
                 QString help;
                 helpMethod.invoke(this, Qt::DirectConnection, Q_RETURN_ARG(QString, help));
-                printLine(help);
+                printLine(" - " + help);
             }
         }
     }
@@ -190,6 +179,87 @@ void InteractiveCommand::setColors(const Colors &colors)
 void InteractiveCommand::clearColor()
 {
     print(Color::clear().color());
+}
+
+bool InteractiveCommand::runMethod(const QString &commandString, const QStringList &args)
+{
+    for (int i = 0; i < metaObject()->methodCount(); i++) {
+        QMetaMethod method = metaObject()->method(i);
+        if (checkMethodName(method, commandString)
+                && invokeMethod(method, args)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool InteractiveCommand::runCommand(const QString &commandString, const QStringList &args)
+{
+    for (InteractiveCommand *command : m_commands) {
+        if (command->name() == commandString) {
+            if (!command->parse(args))
+                command->run();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool InteractiveCommand::invokeMethod(const QMetaMethod &method, const QStringList &args)
+{
+    if (!checkArguments(method, args))
+        return false;
+
+    switch (method.parameterCount()) {
+    case 0:
+        return method.invoke(this, Qt::DirectConnection);
+    case 1:
+        return method.invoke(this, Qt::DirectConnection,
+                             Q_ARG(QVariant, args.at(0)));
+    case 2:
+        return method.invoke(this, Qt::DirectConnection,
+                             Q_ARG(QVariant, args.at(0)),
+                             Q_ARG(QVariant, args.at(1)));
+    case 3:
+        return method.invoke(this, Qt::DirectConnection,
+                             Q_ARG(QVariant, args.at(0)),
+                             Q_ARG(QVariant, args.at(1)),
+                             Q_ARG(QVariant, args.at(2)));
+    }
+
+    return false;
+}
+
+bool InteractiveCommand::checkMethodName(const QMetaMethod &method, const QString &command)
+{
+    if (method.access() != QMetaMethod::Public
+            || method.methodType() != QMetaMethod::Slot)
+        return false;
+
+
+    QByteArray methodName = method.name();
+    int offset = methodName.size() - CommandPostfixSize;
+
+    if (methodName.mid(offset) != CommandPostfix)
+        return false;
+
+    QByteArray methodCommand = methodName.left(offset);
+    return methodCommand.toLower() == command;
+}
+
+bool InteractiveCommand::checkArguments(const QMetaMethod &method, const QStringList &args)
+{
+    if (method.parameterCount() != args.size())
+        return false;
+
+    for (int i = 0; i < method.parameterCount(); i++) {
+        if (method.parameterType(i) != QMetaType::QVariant)
+            return false;
+    }
+
+    return true;
 }
 
 } // namespace InteractiveShell
