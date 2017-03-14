@@ -121,6 +121,27 @@ void InteractiveCommand::printLine(const QString &message, int spaces) const
     out << space.repeated(spaces) << message << "\n";
 }
 
+QDebug InteractiveCommand::say() const
+{
+    return QDebug(QtInfoMsg).noquote();
+}
+
+void InteractiveCommand::say(const QString &message) const
+{
+    QDebug debug(QtInfoMsg);
+    debug << message;
+}
+
+void InteractiveCommand::say(const QString &message, const Color &color) const
+{
+    say().nospace() << color << message << Color::clear();
+}
+
+void InteractiveCommand::say(const QString &message, const Colors &colors) const
+{
+    say().nospace() << colors << message << Color::clear();
+}
+
 QString InteractiveCommand::ask(const QString &question, int spaces)
 {
     printLine(question, spaces);

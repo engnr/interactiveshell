@@ -122,5 +122,30 @@ const char *Color::color() const
     return m_color.constData();
 }
 
+QDebug operator<<(QDebug debug, const Color &color)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << color.color();
+    return debug;
+}
+
+QDebug operator<<(QDebug debug, const Colors &colors)
+{
+    QDebugStateSaver saver(debug);
+    for (const Color &color : colors)
+        debug.nospace() << color.color();
+    return debug;
+}
+
+Colors operator|(const Color &color1, const Color &color2)
+{
+    return Colors() << color1 << color2;
+}
+
+Colors operator|(const Colors &colors, const Color &color)
+{
+    return (Colors(colors) << color);
+}
+
 } // namespace InteractiveShell
 } // namespace Engnr

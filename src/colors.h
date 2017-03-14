@@ -2,6 +2,7 @@
 #define COLORS_H
 
 #include <QString>
+#include <QDebug>
 
 namespace Engnr {
 namespace InteractiveShell {
@@ -36,6 +37,11 @@ private:
 };
 
 typedef QList<Color> Colors;
+
+QDebug operator<<(QDebug debug, const Color &color);
+QDebug operator<<(QDebug debug, const Colors &colors);
+Colors operator|(const Color &color1, const Color &color2);
+Colors operator|(const Colors &colors, const Color &color);
 
 } // namespace InteractiveShell
 } // namespace Engnr
