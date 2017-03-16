@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/interactivecommand.h \
     $$PWD/rootcommand.h \
     $$PWD/interactiveshellapplication.h \
-    $$PWD/colors.h
+    $$PWD/colors.h \
+    $$PWD/interactivegroup.h
 
 SOURCES += \
     $$PWD/interactiveshell.cpp \
@@ -13,4 +14,5 @@ SOURCES += \
     $$PWD/interactivecommand.cpp \
     $$PWD/rootcommand.cpp \
     $$PWD/interactiveshellapplication.cpp \
-    $$PWD/colors.cpp
+    $$PWD/colors.cpp \
+    $$PWD/interactivegroup.cpp
