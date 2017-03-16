@@ -21,6 +21,13 @@ private:
     InteractiveShell m_shell;
 };
 
+#define INTERACTIVESHELL_MAIN(RootCommand) \
+    int main(int argc, char *argv[]) { \
+        Engnr::InteractiveShell::InteractiveShellApplication a(argc, argv); \
+        a.setRootCommand(new RootCommand); \
+        return a.exec(); \
+    }
+
 } // namespace InteractiveShell
 } // namespace Engnr
 
