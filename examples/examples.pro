@@ -3,4 +3,5 @@ SUBDIRS += \
     helloworld \
     subcommands \
     colors \
-    overloading
+    overloading \
+    minimal
