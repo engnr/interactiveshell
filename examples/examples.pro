@@ -4,4 +4,5 @@ SUBDIRS += \
     subcommands \
     colors \
     overloading \
-    minimal
+    minimal \
+    group
